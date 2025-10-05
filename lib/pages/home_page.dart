@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
           buildHeader(),
           buildGreetingTexts(),
           buildSearchContainer(),
-          buildTaskCategories(),
+          buildTaskCategories(context),
           buildTodaysTasks(),
           buildTasksCards(),
         ],
@@ -97,13 +97,19 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget buildTaskCategories() {
+  Widget buildTaskCategories(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 36),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          CustomCategory(iconPath: "assets/ic-todo.png", title: "title"),
+          CustomCategory(
+            iconPath: "assets/ic-todo.png",
+            title: "To-Do",
+            onTap: () {
+              Navigator.pushNamed(context, "/todo");
+            },
+          ),
           CustomCategory(iconPath: "assets/ic-todo-done.png", title: "Done"),
           CustomCategory(iconPath: "assets/ic-pomodoro.png", title: "Pomodoro"),
           CustomCategory(iconPath: "assets/ic-add-task.png", title: "Add Task"),
