@@ -70,7 +70,7 @@ class CustomButtonMedium extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (iconPath != null) ...[
-              Image.asset(iconPath!, height: 10, width: 10),
+              Image.asset(iconPath!),
               const SizedBox(width: 5),
             ],
             Text(
@@ -160,5 +160,3 @@ class CustomButtonLargePlaceholder extends StatelessWidget {
     );
   }
 }
-
-

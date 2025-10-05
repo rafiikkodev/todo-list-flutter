@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:template_project_flutter/pages/home_page.dart';
+import 'package:template_project_flutter/pages/todo_page.dart';
 import 'package:template_project_flutter/shared/theme.dart';
 
 void main() => runApp(const MyApp());
@@ -25,8 +26,10 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: "/home",
-      routes: {"/home": (context) => const HomePage()},
+      routes: {
+        "/": (context) => const HomePage(),
+        "/todo": (context) => const TodoPage(),
+      },
     );
   }
 }
