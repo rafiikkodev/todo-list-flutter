@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:template_project_flutter/shared/theme.dart';
-import 'package:template_project_flutter/widgets/custom_card..dart';
+import 'package:template_project_flutter/widgets/custom_card.dart';
 import 'package:template_project_flutter/widgets/custom_category.dart';
 
 class HomePage extends StatelessWidget {
