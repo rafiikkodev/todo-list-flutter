@@ -79,7 +79,124 @@ class _TodoPageState extends State<TodoPage> {
             },
             child: Image.asset("assets/ic-back.png"),
           ),
-          CustomButtonMedium(title: "Add Task", iconPath: "assets/ic-plus.png"),
+          // CustomButtonMedium(title: "Add Task", iconPath: "assets/ic-plus.png"),
+          CustomButtonMedium(
+            title: "Add Task",
+            iconPath: "assets/ic-plus.png",
+            onPressed: () {
+              // Munculkan modal bottom sheet
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                barrierColor: Colors.black.withAlpha(200), // hitam transparan
+                builder: (context) {
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: blackThirdColor,
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(24),
+                        ),
+                      ),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 50,
+                              height: 5,
+                              margin: const EdgeInsets.only(bottom: 16),
+                              decoration: BoxDecoration(
+                                color: blackThirdColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Add Task",
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: semiBold,
+                                  color: blackPrimaryColor,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            TextField(
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: whiteColor,
+                                hintText:
+                                    'Task title', // tampil di tengah dan hilang saat user ngetik
+                                hintStyle: TextStyle(
+                                  color: blackThirdColor,
+                                  fontSize: 14,
+                                  fontWeight:
+                                      medium, // sedikit transparan biar beda dari teks input
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                  borderSide: BorderSide.none,
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 24,
+                                ),
+                              ),
+                              style: TextStyle(
+                                color: blackPrimaryColor, // warna teks user
+                              ),
+                              cursorColor: blackPrimaryColor,
+                            ),
+                            const SizedBox(height: 16),
+                            TextField(
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: whiteColor,
+                                hintText: 'Description',
+                                hintStyle: TextStyle(
+                                  color: blackThirdColor,
+                                  fontSize: 14,
+                                  fontWeight: medium,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                  borderSide: BorderSide.none,
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 24,
+                                ),
+                              ),
+                              style: TextStyle(color: blackPrimaryColor),
+                              cursorColor: blackPrimaryColor,
+                              minLines: 3,
+                              maxLines: null,
+                            ),
+
+                            const SizedBox(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Image.asset("assets/ic-clock.png"),
+                                Image.asset("assets/ic-send.png"),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
         ],
       ),
     );
