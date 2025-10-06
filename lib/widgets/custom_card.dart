@@ -4,10 +4,11 @@ import 'package:template_project_flutter/shared/theme.dart';
 class CustomCardTodo extends StatelessWidget {
   final String title;
   final String subTitle;
-  final String time; // sementara pake string
+  final String time;
   final double height;
   final double width;
   final VoidCallback? onPressed;
+  final bool isActive; // Tambahkan parameter untuk status active
 
   const CustomCardTodo({
     super.key,
@@ -17,6 +18,7 @@ class CustomCardTodo extends StatelessWidget {
     this.height = 109,
     this.onPressed,
     required this.time,
+    this.isActive = false, // Default false
   });
 
   @override
@@ -27,7 +29,9 @@ class CustomCardTodo extends StatelessWidget {
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(
-          backgroundColor: purplePrimary,
+          backgroundColor: isActive
+              ? purplePrimary
+              : blackThirdColor, // Ganti berdasarkan status
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
           ),
