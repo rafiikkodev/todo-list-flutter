@@ -140,7 +140,7 @@ class _TodoPageState extends State<TodoPage> {
       height: 5,
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: blackThirdColor,
+        color: whiteColor,
         borderRadius: BorderRadius.circular(10),
       ),
     );
@@ -277,7 +277,8 @@ class _TodoPageState extends State<TodoPage> {
           width: 60,
           height: 80,
           initialSelectedDate: DateTime.now(),
-          selectedTextColor: purplePrimary,
+          selectedTextColor: whiteColor,
+          selectionColor: purplePrimary,
           onDateChange: (date) {
             // Handle date change
           },
