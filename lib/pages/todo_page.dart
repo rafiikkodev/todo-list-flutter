@@ -59,7 +59,7 @@ class _TodoPageState extends State<TodoPage> {
     return Scaffold(
       body: Column(
         children: [
-          _buildHeader(),
+          _buildHeader(context),
           _buildCalendar(),
           Expanded(child: _buildScrollableStepper()),
         ],
@@ -67,13 +67,18 @@ class _TodoPageState extends State<TodoPage> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 85, left: 24, right: 24),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Image.asset("assets/ic-back.png"),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Image.asset("assets/ic-back.png"),
+          ),
           CustomButtonMedium(title: "Add Task", iconPath: "assets/ic-plus.png"),
         ],
       ),
