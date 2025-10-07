@@ -112,7 +112,17 @@ class HomePage extends StatelessWidget {
           ),
           CustomCategory(iconPath: "assets/ic-todo-done.png", title: "Done"),
           CustomCategory(iconPath: "assets/ic-pomodoro.png", title: "Pomodoro"),
-          CustomCategory(iconPath: "assets/ic-add-task.png", title: "Add Task"),
+          CustomCategory(
+            iconPath: "assets/ic-add-task.png",
+            title: "Add Task",
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                "/todo",
+                arguments: {'showModal': true},
+              );
+            },
+          ),
         ],
       ),
     );
@@ -125,7 +135,7 @@ class HomePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "Today’s Tasks",
+            "Today's Tasks",
             style: blackPrimaryTextStyle.copyWith(
               fontSize: 24,
               fontWeight: semiBold,
