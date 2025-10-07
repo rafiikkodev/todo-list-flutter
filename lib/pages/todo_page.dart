@@ -224,7 +224,7 @@ class _TodoPageState extends State<TodoPage> {
               initialDate: selectedDate ?? DateTime.now(),
             );
 
-            if (result != null && result is Map && context.mounted) {
+            if (result != null && context.mounted) {
               setModalState(() {
                 selectedDate = result['date'] as DateTime?;
                 selectedTime = result['time'] as TimeOfDay?;
