@@ -111,7 +111,13 @@ class HomePage extends StatelessWidget {
             },
           ),
           CustomCategory(iconPath: "assets/ic-todo-done.png", title: "Done"),
-          CustomCategory(iconPath: "assets/ic-pomodoro.png", title: "Pomodoro"),
+          CustomCategory(
+            iconPath: "assets/ic-pomodoro.png",
+            title: "Pomodoro",
+            onTap: () {
+              Navigator.pushNamed(context, "/pomodoro");
+            },
+          ),
           CustomCategory(
             iconPath: "assets/ic-add-task.png",
             title: "Add Task",
