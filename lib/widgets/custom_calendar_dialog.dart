@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:template_project_flutter/shared/theme.dart';
 import 'package:template_project_flutter/widgets/custom_button.dart';
+import 'package:template_project_flutter/widgets/custom_clock_dialog.dart';
 
 /// Shows a custom calendar picker dialog
-Future<DateTime?> showCustomCalendarPicker(
+Future<Map<String, dynamic>?> showCustomCalendarPicker(
   BuildContext context, {
   DateTime? initialDate,
 }) async {
-  return showDialog<DateTime>(
+  return showDialog<Map<String, dynamic>>(
     context: context,
     barrierColor: Colors.black.withAlpha(200),
     builder: (BuildContext context) {
@@ -230,7 +231,7 @@ class _CustomCalendarDialogState extends State<CustomCalendarDialog> {
 
   Widget _buildActionButtons() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
         children: [
           Expanded(
@@ -242,10 +243,22 @@ class _CustomCalendarDialogState extends State<CustomCalendarDialog> {
           const SizedBox(width: 12),
           Expanded(
             child: CustomButtonMedium(
-              title: "Choose Date",
-              onPressed: () {
+              title: "Choose Time",
+              onPressed: () async {
                 if (_selectedDate != null) {
-                  Navigator.pop(context, _selectedDate);
+                  // Buka dialog time picker
+                  final TimeOfDay? pickedTime = await showCustomTimePicker(
+                    context,
+                    initialTime: TimeOfDay.now(),
+                  );
+
+                  if (pickedTime != null && context.mounted) {
+                    // Return both date and time
+                    Navigator.pop(context, {
+                      'date': _selectedDate,
+                      'time': pickedTime,
+                    });
+                  }
                 }
               },
             ),

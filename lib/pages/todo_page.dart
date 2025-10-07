@@ -16,6 +16,7 @@ class TodoPage extends StatefulWidget {
 class _TodoPageState extends State<TodoPage> {
   int currentIndex = 0;
   DateTime? selectedDate;
+  TimeOfDay? selectedTime;
 
   final List<Map<String, String>> todoList = [
     {
@@ -218,22 +219,34 @@ class _TodoPageState extends State<TodoPage> {
       children: [
         GestureDetector(
           onTap: () async {
-            final DateTime? picked = await showCustomCalendarPicker(
+            final result = await showCustomCalendarPicker(
               context,
               initialDate: selectedDate ?? DateTime.now(),
             );
 
-            if (picked != null) {
+            if (result != null && result is Map && context.mounted) {
               setModalState(() {
-                selectedDate = picked;
+                selectedDate = result['date'] as DateTime?;
+                selectedTime = result['time'] as TimeOfDay?;
               });
 
-              if (context.mounted) {
+              // Format tanggal dan waktu
+              if (selectedDate != null && selectedTime != null) {
+                final formattedDate = DateFormat(
+                  'dd/MM/yyyy',
+                ).format(selectedDate!);
+                final hour = selectedTime!.hourOfPeriod == 0
+                    ? 12
+                    : selectedTime!.hourOfPeriod;
+                final minute = selectedTime!.minute.toString().padLeft(2, '0');
+                final period = selectedTime!.period == DayPeriod.am
+                    ? 'AM'
+                    : 'PM';
+                final formattedTime = '$hour:$minute $period';
+
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(
-                      'Date selected: ${DateFormat('dd MMMM yyyy').format(picked)}',
-                    ),
+                    content: Text('Selected: $formattedDate | $formattedTime'),
                     duration: const Duration(seconds: 2),
                   ),
                 );
@@ -243,13 +256,13 @@ class _TodoPageState extends State<TodoPage> {
           child: Row(
             children: [
               Image.asset("assets/ic-clock.png"),
-              if (selectedDate != null) ...[
+              if (selectedDate != null && selectedTime != null) ...[
                 const SizedBox(width: 8),
                 Text(
-                  DateFormat('dd/MM/yyyy').format(selectedDate!),
+                  _formatDateTime(selectedDate!, selectedTime!),
                   style: TextStyle(
                     color: blackPrimaryColor,
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: medium,
                   ),
                 ),
@@ -265,6 +278,14 @@ class _TodoPageState extends State<TodoPage> {
         ),
       ],
     );
+  }
+
+  String _formatDateTime(DateTime date, TimeOfDay time) {
+    final formattedDate = DateFormat('dd/MM/yyyy').format(date);
+    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+    return '$formattedDate | $hour:$minute $period';
   }
 
   Widget _buildCalendar() {
