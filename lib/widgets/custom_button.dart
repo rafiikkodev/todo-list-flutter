@@ -47,7 +47,7 @@ class CustomButtonMedium extends StatelessWidget {
   const CustomButtonMedium({
     super.key,
     required this.title,
-    this.width = 171,
+    this.width = 180,
     this.height = 40,
     this.iconPath,
     this.onPressed,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:template_project_flutter/models/todo.dart';
+import 'package:template_project_flutter/services/storage_service.dart';
 import 'package:template_project_flutter/shared/theme.dart';
 import 'package:template_project_flutter/widgets/custom_button.dart';
 import 'package:template_project_flutter/widgets/custom_calendar_dialog.dart';
@@ -12,8 +14,11 @@ class EditTodoPage extends StatefulWidget {
 }
 
 class _EditTodoPageState extends State<EditTodoPage> {
+  final StorageService _storageService = StorageService();
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
+
+  Todo? _currentTodo;
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   bool isEditing = false;
@@ -28,11 +33,69 @@ class _EditTodoPageState extends State<EditTodoPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final args =
           ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-      if (args != null) {
-        _titleController.text = args['title'] ?? '';
-        _descriptionController.text = args['description'] ?? '';
+      if (args != null && args['todo'] != null) {
+        _currentTodo = args['todo'] as Todo;
+        _titleController.text = _currentTodo!.title;
+        _descriptionController.text = _currentTodo!.description;
+        selectedDate = _currentTodo!.date;
+
+        // Parse time string to TimeOfDay
+        final timeParts = _currentTodo!.time.split(':');
+        if (timeParts.length == 2) {
+          final hourMinute = timeParts[0];
+          final minutePeriod = timeParts[1].split(' ');
+          int hour = int.parse(hourMinute);
+          final minute = int.parse(minutePeriod[0]);
+          final period = minutePeriod.length > 1 ? minutePeriod[1] : '';
+
+          if (period == 'PM' && hour != 12) {
+            hour += 12;
+          } else if (period == 'AM' && hour == 12) {
+            hour = 0;
+          }
+
+          selectedTime = TimeOfDay(hour: hour, minute: minute);
+        }
+
+        setState(() {});
       }
     });
+  }
+
+  Future<void> _deleteTodo() async {
+    if (_currentTodo == null) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Task'),
+        content: const Text('Are you sure you want to delete this task?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      final success = await _storageService.deleteTodo(_currentTodo!.id);
+      if (success && mounted) {
+        Navigator.pop(context, true);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Task deleted successfully'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -51,13 +114,21 @@ class _EditTodoPageState extends State<EditTodoPage> {
           children: [
             _buildHeader(context),
             _buildForm(),
-            const SizedBox(height: 100), // Space for floating button
+            const SizedBox(height: 180), // Space for floating buttons
           ],
         ),
       ),
-      floatingActionButton: Container(
-        margin: const EdgeInsets.all(24),
-        child: CustomButtonLarge(title: "Delete Task", onPressed: () {}),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 24),
+            child: CustomButtonLarge(
+              title: "Delete Task",
+              onPressed: _deleteTodo,
+            ),
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -94,7 +165,7 @@ class _EditTodoPageState extends State<EditTodoPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title - always editable when isEditing = true
+          // Title
           IntrinsicHeight(
             child: TextField(
               controller: _titleController,
@@ -115,7 +186,7 @@ class _EditTodoPageState extends State<EditTodoPage> {
           ),
           const SizedBox(height: 12),
 
-          // Description - always editable when isEditing = true
+          // Description
           TextField(
             controller: _descriptionController,
             enabled: isEditing,
@@ -133,6 +204,8 @@ class _EditTodoPageState extends State<EditTodoPage> {
             maxLines: null,
           ),
           const SizedBox(height: 24),
+
+          // Date & Time
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -151,53 +224,48 @@ class _EditTodoPageState extends State<EditTodoPage> {
                   ),
                 ],
               ),
-              GestureDetector(
-                onTap: () async {
-                  final result = await showCustomCalendarPicker(
-                    context,
-                    initialDate: selectedDate ?? DateTime.now(),
-                  );
+              if (isEditing)
+                GestureDetector(
+                  onTap: () async {
+                    final result = await showCustomCalendarPicker(
+                      context,
+                      initialDate: selectedDate ?? DateTime.now(),
+                    );
 
-                  if (result != null && mounted) {
-                    setState(() {
-                      selectedDate = result['date'] as DateTime?;
-                      selectedTime = result['time'] as TimeOfDay?;
-                    });
-
-                    // Format tanggal dan waktu
-                    if (selectedDate != null && selectedTime != null) {
-                      final formattedDate = DateFormat(
-                        'dd/MM/yyyy',
-                      ).format(selectedDate!);
-                      final hour = selectedTime!.hourOfPeriod == 0
-                          ? 12
-                          : selectedTime!.hourOfPeriod;
-                      final minute = selectedTime!.minute.toString().padLeft(
-                        2,
-                        '0',
-                      );
-                      final period = selectedTime!.period == DayPeriod.am
-                          ? 'AM'
-                          : 'PM';
-                      final formattedTime = '$hour:$minute $period';
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Selected: $formattedDate | $formattedTime',
-                          ),
-                          duration: const Duration(seconds: 2),
-                        ),
-                      );
+                    if (result != null && mounted) {
+                      setState(() {
+                        selectedDate = result['date'] as DateTime?;
+                        selectedTime = result['time'] as TimeOfDay?;
+                      });
                     }
-                  }
-                },
-                child: CustomButtonMedium(
-                  title: selectedDate != null && selectedTime != null
-                      ? _formatDateTime(selectedDate!, selectedTime!)
-                      : "dd/MM/yyyy",
+                  },
+                  child: CustomButtonMedium(
+                    title: selectedDate != null && selectedTime != null
+                        ? _formatDateTime(selectedDate!, selectedTime!)
+                        : "dd/MM/yyyy",
+                  ),
+                )
+              else
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: blackThirdColor,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    selectedDate != null && selectedTime != null
+                        ? _formatDateTime(selectedDate!, selectedTime!)
+                        : "No date set",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: medium,
+                      color: blackPrimaryColor,
+                    ),
+                  ),
                 ),
-              ),
             ],
           ),
           const SizedBox(height: 40),

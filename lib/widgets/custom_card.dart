@@ -8,7 +8,7 @@ class CustomCardTodo extends StatelessWidget {
   final double height;
   final double width;
   final VoidCallback? onPressed;
-  final bool isActive; // Tambahkan parameter untuk status active
+  final bool isActive;
 
   const CustomCardTodo({
     super.key,
@@ -18,7 +18,7 @@ class CustomCardTodo extends StatelessWidget {
     this.height = 109,
     this.onPressed,
     required this.time,
-    this.isActive = false, // Default false
+    this.isActive = false,
   });
 
   @override
@@ -29,9 +29,7 @@ class CustomCardTodo extends StatelessWidget {
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(
-          backgroundColor: isActive
-              ? purplePrimary
-              : blackThirdColor, // Ganti berdasarkan status
+          backgroundColor: isActive ? purplePrimary : blackThirdColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
           ),
@@ -57,7 +55,7 @@ class CustomCardTodo extends StatelessWidget {
                       textAlign: TextAlign.start,
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Text(
                     time,
                     style: whiteTextStyle.copyWith(
@@ -67,7 +65,7 @@ class CustomCardTodo extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Text(
                 subTitle,
                 style: whiteTextStyle.copyWith(
@@ -89,7 +87,7 @@ class CustomCardTodo extends StatelessWidget {
 class CustomCardHome extends StatelessWidget {
   final String title;
   final String subTitle;
-  final String time; // sementara pake string
+  final String time;
   final String progress;
   final double height;
   final double width;
@@ -106,8 +104,21 @@ class CustomCardHome extends StatelessWidget {
     this.onPressed,
   });
 
+  // Parse progress string to double (e.g., "55%" -> 0.55)
+  double _parseProgress() {
+    try {
+      final numericString = progress.replaceAll('%', '').trim();
+      final value = double.parse(numericString);
+      return value / 100;
+    } catch (e) {
+      return 0.0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final progressValue = _parseProgress();
+
     return SizedBox(
       width: width,
       height: height,
@@ -175,7 +186,7 @@ class CustomCardHome extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(55),
                 child: LinearProgressIndicator(
-                  value: 0.55,
+                  value: progressValue.clamp(0.0, 1.0),
                   minHeight: 5,
                   valueColor: AlwaysStoppedAnimation(whiteColor),
                   backgroundColor: whiteColor.withAlpha(50),

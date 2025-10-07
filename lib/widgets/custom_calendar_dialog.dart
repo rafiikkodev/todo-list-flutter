@@ -56,6 +56,27 @@ class _CustomCalendarDialogState extends State<CustomCalendarDialog> {
     });
   }
 
+  Future<void> _handleChooseTime() async {
+    if (_selectedDate == null) return;
+
+    // Simpan context dalam variable lokal
+    final navigator = Navigator.of(context);
+
+    // Buka dialog time picker
+    final TimeOfDay? pickedTime = await showCustomTimePicker(
+      context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    // Check mounted sebelum menggunakan Navigator
+    if (!mounted) return;
+
+    if (pickedTime != null) {
+      // Return both date and time
+      navigator.pop({'date': _selectedDate, 'time': pickedTime});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -244,23 +265,7 @@ class _CustomCalendarDialogState extends State<CustomCalendarDialog> {
           Expanded(
             child: CustomButtonMedium(
               title: "Choose Time",
-              onPressed: () async {
-                if (_selectedDate != null) {
-                  // Buka dialog time picker
-                  final TimeOfDay? pickedTime = await showCustomTimePicker(
-                    context,
-                    initialTime: TimeOfDay.now(),
-                  );
-
-                  if (pickedTime != null && context.mounted) {
-                    // Return both date and time
-                    Navigator.pop(context, {
-                      'date': _selectedDate,
-                      'time': pickedTime,
-                    });
-                  }
-                }
-              },
+              onPressed: _selectedDate != null ? _handleChooseTime : null,
             ),
           ),
         ],

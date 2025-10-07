@@ -1,37 +1,60 @@
-import 'dart:convert';
-
 class Todo {
   String id;
   String title;
-  String? description;
-  bool done;
-  DateTime createdAt;
+  String description;
+  DateTime date;
+  String time;
+  bool isCompleted;
 
   Todo({
     required this.id,
     required this.title,
-    this.description,
-    this.done = false,
-    DateTime? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now();
+    required this.description,
+    required this.date,
+    required this.time,
+    this.isCompleted = false,
+  });
 
-  factory Todo.fromMap(Map<String, dynamic> map) => Todo(
-    id: map['id'] as String,
-    title: map['title'] as String,
-    description: map['description'] as String?,
-    done: map['done'] as bool? ?? false,
-    createdAt: DateTime.parse(map['createdAt'] as String),
-  );
+  // Convert Todo to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'date': date.toIso8601String(),
+      'time': time,
+      'isCompleted': isCompleted,
+    };
+  }
 
-  Map<String, dynamic> toMap() => {
-    'id': id,
-    'title': title,
-    'description': description,
-    'done': done,
-    'createdAt': createdAt.toIso8601String(),
-  };
+  // Create Todo from JSON
+  factory Todo.fromJson(Map<String, dynamic> json) {
+    return Todo(
+      id: json['id'],
+      title: json['title'],
+      description: json['description'],
+      date: DateTime.parse(json['date']),
+      time: json['time'],
+      isCompleted: json['isCompleted'] ?? false,
+    );
+  }
 
-  String toJson() => jsonEncode(toMap());
-  factory Todo.fromJson(String source) =>
-      Todo.fromMap(jsonDecode(source) as Map<String, dynamic>);
+  // Copy with method untuk update
+  Todo copyWith({
+    String? id,
+    String? title,
+    String? description,
+    DateTime? date,
+    String? time,
+    bool? isCompleted,
+  }) {
+    return Todo(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      date: date ?? this.date,
+      time: time ?? this.time,
+      isCompleted: isCompleted ?? this.isCompleted,
+    );
+  }
 }
