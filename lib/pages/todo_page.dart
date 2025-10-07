@@ -56,6 +56,32 @@ class _TodoPageState extends State<TodoPage> {
     setState(() {
       currentIndex = index;
     });
+
+    // Navigate to edit page with task data
+    Navigator.pushNamed(
+      context,
+      '/edit-todo',
+      arguments: {
+        'index': index,
+        'title': todoList[index]['title'],
+        'description': todoList[index]['description'],
+        'time': todoList[index]['time'],
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Check if modal should be shown after widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      if (args != null && args['showModal'] == true) {
+        _showAddTaskModal(context);
+      }
+    });
   }
 
   @override
@@ -106,7 +132,7 @@ class _TodoPageState extends State<TodoPage> {
               child: Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: blackThirdColor,
+                  color: whiteColor,
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(24),
                   ),
@@ -141,7 +167,7 @@ class _TodoPageState extends State<TodoPage> {
       height: 5,
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: whiteColor,
+        color: blackThirdColor,
         borderRadius: BorderRadius.circular(10),
       ),
     );
@@ -165,10 +191,10 @@ class _TodoPageState extends State<TodoPage> {
     return TextField(
       decoration: InputDecoration(
         filled: true,
-        fillColor: whiteColor,
+        fillColor: blackThirdColor,
         hintText: 'Task title',
         hintStyle: TextStyle(
-          color: blackThirdColor,
+          color: blackPrimaryColor,
           fontSize: 14,
           fontWeight: medium,
         ),
@@ -190,10 +216,10 @@ class _TodoPageState extends State<TodoPage> {
     return TextField(
       decoration: InputDecoration(
         filled: true,
-        fillColor: whiteColor,
+        fillColor: blackThirdColor,
         hintText: 'Description',
         hintStyle: TextStyle(
-          color: blackThirdColor,
+          color: blackPrimaryColor,
           fontSize: 14,
           fontWeight: medium,
         ),
