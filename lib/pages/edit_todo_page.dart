@@ -62,6 +62,44 @@ class _EditTodoPageState extends State<EditTodoPage> {
     });
   }
 
+  Future<void> _updateTodo() async {
+    if (_currentTodo == null ||
+        _titleController.text.isEmpty ||
+        selectedDate == null ||
+        selectedTime == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill all fields'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    final updatedTodo = _currentTodo!.copyWith(
+      title: _titleController.text,
+      description: _descriptionController.text,
+      date: selectedDate!,
+      time: selectedTime!.format(context),
+    );
+
+    final success = await _storageService.updateTodo(updatedTodo);
+
+    if (success && mounted) {
+      setState(() {
+        isEditing = false;
+        _currentTodo = updatedTodo;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Task updated successfully'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
   Future<void> _deleteTodo() async {
     if (_currentTodo == null) return;
 
@@ -146,9 +184,15 @@ class _EditTodoPageState extends State<EditTodoPage> {
           ),
           GestureDetector(
             onTap: () {
-              setState(() {
-                isEditing = !isEditing;
-              });
+              if (isEditing) {
+                // Jika sedang editing, save todo
+                _updateTodo();
+              } else {
+                // Jika tidak editing, aktifkan mode edit
+                setState(() {
+                  isEditing = true;
+                });
+              }
             },
             child: Image.asset(
               isEditing ? "assets/ic-check.png" : "assets/ic-edit.png",
