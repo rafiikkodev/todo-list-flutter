@@ -32,7 +32,7 @@ class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
 
   int _selectedHour = 8;
   int _selectedMinute = 45;
-  int _selectedPeriod = 0; // 0 = AM, 1 = PM
+  int _selectedPeriod = 0;
 
   @override
   void initState() {

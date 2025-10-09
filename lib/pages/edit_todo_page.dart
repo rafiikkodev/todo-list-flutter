@@ -152,7 +152,7 @@ class _EditTodoPageState extends State<EditTodoPage> {
           children: [
             _buildHeader(context),
             _buildForm(),
-            const SizedBox(height: 180), // Space for floating buttons
+            const SizedBox(height: 180),
           ],
         ),
       ),

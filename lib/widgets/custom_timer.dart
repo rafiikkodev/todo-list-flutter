@@ -297,7 +297,7 @@ class CircularTimerPainter extends CustomPainter {
         ..strokeWidth = 16
         ..strokeCap = StrokeCap.round;
 
-      const startAngle = -math.pi / 2; // Start from top
+      const startAngle = -math.pi / 2;
       final sweepAngle = 2 * math.pi * progress;
 
       canvas.drawArc(
@@ -308,7 +308,7 @@ class CircularTimerPainter extends CustomPainter {
         progressPaint,
       );
 
-      // Thumb (circle at the end of progress)
+      // Thumb
       final thumbAngle = startAngle + sweepAngle;
       final thumbX = center.dx + radius * math.cos(thumbAngle);
       final thumbY = center.dy + radius * math.sin(thumbAngle);

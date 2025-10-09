@@ -104,7 +104,6 @@ class CustomCardHome extends StatelessWidget {
     this.onPressed,
   });
 
-  // Parse progress string to double (e.g., "55%" -> 0.55)
   double _parseProgress() {
     try {
       final numericString = progress.replaceAll('%', '').trim();

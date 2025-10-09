@@ -87,7 +87,7 @@ class _TodoPageState extends State<TodoPage> {
       return;
     }
 
-    // Search di semua todos (tidak terbatas tanggal)
+    // Search di semua todos
     setState(() {
       _isSearching = true;
       _displayedTodos = _allTodos.where((todo) {
