@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:template_project_flutter/models/todo.dart';
 
+// shared preferences
 class StorageService {
   static const String _todoKey = 'todos';
 
@@ -13,6 +14,7 @@ class StorageService {
     return _prefs!;
   }
 
+  // ambil JSON dari SharedPreferences -> decode -> ubah jadi List<Todo>
   Future<List<Todo>> getTodos() async {
     try {
       final prefs = await _preferences;
@@ -33,6 +35,7 @@ class StorageService {
     }
   }
 
+  // ubah list <Todo> ke JSON -> simpan ke SharedPreferences
   Future<bool> saveTodos(List<Todo> todos) async {
     try {
       final prefs = await _preferences;
@@ -49,6 +52,7 @@ class StorageService {
     }
   }
 
+  // ambil semua todo -> tambah todo baru -> simpan ulang
   Future<bool> addTodo(Todo todo) async {
     try {
       final todos = await getTodos();
@@ -61,6 +65,7 @@ class StorageService {
     }
   }
 
+  // cari todo.id -> ubah datanya -> simpan ulang
   Future<bool> updateTodo(Todo updatedTodo) async {
     try {
       final todos = await getTodos();
@@ -80,6 +85,7 @@ class StorageService {
     }
   }
 
+  // filter list tanpa todo yg dihapus -> simpan ulang
   Future<bool> deleteTodo(String id) async {
     try {
       final todos = await getTodos();
@@ -99,6 +105,7 @@ class StorageService {
     }
   }
 
+  // todo selesai atau belum
   Future<bool> toggleTodoCompletion(String id) async {
     try {
       final todos = await getTodos();
@@ -121,6 +128,7 @@ class StorageService {
     }
   }
 
+  // filter todo berdasarkan tanggal
   Future<List<Todo>> getTodosByDate(DateTime date) async {
     try {
       final todos = await getTodos();
@@ -135,11 +143,13 @@ class StorageService {
     }
   }
 
+  // todo hari ini
   Future<List<Todo>> getTodayTodos() async {
     final now = DateTime.now();
     return await getTodosByDate(now);
   }
 
+  // todo yg sudah selesai
   Future<List<Todo>> getCompletedTodos() async {
     try {
       final todos = await getTodos();
@@ -151,6 +161,7 @@ class StorageService {
     }
   }
 
+  // todo yang belum selesai
   Future<List<Todo>> getIncompleteTodos() async {
     try {
       final todos = await getTodos();
@@ -162,6 +173,7 @@ class StorageService {
     }
   }
 
+  // // hapus semua data
   Future<bool> clearAllTodos() async {
     try {
       final prefs = await _preferences;
@@ -173,6 +185,7 @@ class StorageService {
     }
   }
 
+  // helper untuk compare tanggal
   bool _isSameDate(DateTime date1, DateTime date2) {
     return date1.year == date2.year &&
         date1.month == date2.month &&
