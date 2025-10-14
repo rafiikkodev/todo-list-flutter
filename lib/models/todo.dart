@@ -1,12 +1,14 @@
-class Todo {
-  String id;
-  String title;
-  String description;
-  DateTime date;
-  String time;
-  bool isCompleted;
+import 'package:equatable/equatable.dart';
 
-  Todo({
+class Todo extends Equatable {
+  final String id;
+  final String title;
+  final String description;
+  final DateTime date;
+  final String time;
+  final bool isCompleted;
+
+  const Todo({
     required this.id,
     required this.title,
     required this.description,
@@ -15,7 +17,7 @@ class Todo {
     this.isCompleted = false,
   });
 
-  // Convert Todo to JSON
+  // Convert Todo to JSON - simpan data ke storage
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -27,7 +29,7 @@ class Todo {
     };
   }
 
-  // Create Todo from JSON
+  // Create Todo from JSON - baca data dari storage
   factory Todo.fromJson(Map<String, dynamic> json) {
     return Todo(
       id: json['id'],
@@ -57,4 +59,7 @@ class Todo {
       isCompleted: isCompleted ?? this.isCompleted,
     );
   }
+
+  @override
+  List<Object?> get props => [id, title, description, date, time, isCompleted];
 }
